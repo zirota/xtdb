@@ -1,7 +1,4 @@
 = Get Started
-:toc: macro
-
-toc::[]
 
 [#introduction]
 ==  Introduction

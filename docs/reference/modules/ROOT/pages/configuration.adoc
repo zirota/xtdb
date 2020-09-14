@@ -1,7 +1,4 @@
 = Configuration
-:toc: macro
-
-toc::[]
 
 [#nodes]
 == Nodes
