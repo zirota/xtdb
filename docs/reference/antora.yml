@@ -1,6 +1,6 @@
 name: reference
 title: Reference
-version: 20.12-1.13.0
+version: 1.13.0
 start_page: ROOT:installation.adoc
 nav:
   - modules/ROOT/nav.adoc
