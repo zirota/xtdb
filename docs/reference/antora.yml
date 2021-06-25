@@ -1,6 +1,6 @@
 name: reference
 title: Reference
-version: 20.09-1.11.0
+version: 1.11.0
 # display_version: Latest
 start_page: ROOT:get-started.adoc
 nav:
