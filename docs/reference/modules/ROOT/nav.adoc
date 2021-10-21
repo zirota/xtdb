@@ -7,7 +7,7 @@
 * xref:queries.adoc[Queries]
 * Core API
 ** xref:clojure-api.adoc[Clojure]
-** https://docs.xtdb.com/clients/java/{page-version}[Java,window=_blank]
+** https://docs.xtdb.com/clients/java/javadoc/{page-version}[Java,window=_blank]
 * xref:building.adoc[Building]
 * xref:monitoring.adoc[Monitoring]
 * xref:checkpointing.adoc[Checkpointing]
