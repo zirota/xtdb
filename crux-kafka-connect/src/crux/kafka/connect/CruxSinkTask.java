@@ -39,7 +39,7 @@ public class CruxSinkTask extends SinkTask {
 
     @Override
     public void put(Collection<SinkRecord> sinkRecords) {
-        submitSinkRecords.invoke(api, props, sinkRecords);
+        submitSinkRecords.invoke(props, sinkRecords);
     }
 
     @Override

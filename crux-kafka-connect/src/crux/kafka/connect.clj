@@ -6,7 +6,9 @@
             [crux.io :as cio]
             [crux.error :as err]
             [cognitect.transit :as transit]
-            [crux.api :as api])
+            [crux.api :as api]
+            [clj-http.client :as http-client]
+            [clojure.string :as string])
   (:import [org.apache.kafka.connect.data Schema Schema$Type Struct Field]
            org.apache.kafka.connect.sink.SinkRecord
            org.apache.kafka.connect.source.SourceRecord
@@ -111,10 +113,29 @@
     (log/info "tx op:" tx-op)
     tx-op))
 
-(defn submit-sink-records [api props records]
+(defn parse-request-headers [props]
+  (let [headers (get props CruxSinkConnector/HEADERS_CONFIG)
+        separator (get props CruxSinkConnector/HEADER_SEPARATOR_CONFIG)]
+    (->> (string/split headers separator)
+         (map #(re-matches #"(.+):(.+)" %))
+         (map (fn [[_ key value]] [(keyword key) value]))
+         (into {}))))
+
+(defn submit-sink-records [props records]
   (when (seq records)
-    (api/submit-tx api (vec (for [record records]
-                               (transform-sink-record props record))))))
+    (let [url (get props CruxSinkConnector/URL_CONFIG)
+          submit-tx-endpoint (str url "/_crux/submit-tx")]
+      (http-client/post submit-tx-endpoint
+                        :headers (parse-request-headers props) 
+                        {:form-params {:tx-ops (vec (for [record records]
+                                                      (transform-sink-record props record)))}}
+                        :content-type :edn
+                        ))))
+
+;; (defn submit-sink-records [api props records]
+;;   (when (seq records)
+;;     (api/submit-tx api (vec (for [record records]
+;;                                (transform-sink-record props record))))))
 
 (defn- write-transit [x]
   (with-open [out (ByteArrayOutputStream.)]

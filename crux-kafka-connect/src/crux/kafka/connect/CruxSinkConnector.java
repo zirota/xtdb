@@ -16,12 +16,22 @@ import java.util.Map;
 public class CruxSinkConnector extends SinkConnector {
 
     public static final String URL_CONFIG = "url";
+    public static final String HEADERS_CONFIG = "headers";
+    public static final String HEADER_SEPARATOR_CONFIG = "header.separator";
     public static final String ID_KEY_CONFIG = "id.key";
+
+    public static final String DEFAULT_HEADERS_SEPARATOR = "|";
+
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(URL_CONFIG, Type.STRING, "http://localhost:3000", Importance.HIGH, "Destination URL of Crux HTTP end point.")
+        .define(HEADERS_CONFIG, Type.STRING, null, Importance.LOW, "Any additional headers used to send to the url. " +
+                "In the format header:value. E.g. Content-Type:application/json")
+        .define(HEADER_SEPARATOR_CONFIG, Type.STRING, DEFAULT_HEADERS_SEPARATOR, Importance.LOW, "Seperator used to separate multipe headers.")
         .define(ID_KEY_CONFIG, Type.STRING, "crux.db/id", Importance.LOW, "Record key to use as :crux.db/id.");
 
     private String url;
+    private String headers;
+    private String headerSeparator;
     private String idKey;
 
     @Override
@@ -33,6 +43,8 @@ public class CruxSinkConnector extends SinkConnector {
     public void start(Map<String, String> props) {
         AbstractConfig parsedConfig = new AbstractConfig(CONFIG_DEF, props);
         url = parsedConfig.getString(URL_CONFIG);
+        headers = parsedConfig.getString(HEADERS_CONFIG);
+        headerSeparator = parsedConfig.getString(HEADER_SEPARATOR_CONFIG);
         idKey = parsedConfig.getString(ID_KEY_CONFIG);
     }
 
@@ -50,6 +62,10 @@ public class CruxSinkConnector extends SinkConnector {
                 config.put(URL_CONFIG, url);
             if (url != null)
                 config.put(ID_KEY_CONFIG, idKey);
+            if (url != null)
+                config.put(HEADERS_CONFIG, headers);
+            if (url != null)
+                config.put(HEADER_SEPARATOR_CONFIG, headerSeparator);
             configs.add(config);
         }
         return configs;
